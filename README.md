@@ -90,7 +90,7 @@ node build.js     # site/ に出力されます
 
 ## ライセンス
 
-[CC BY 4.0](LICENSE)。出典を示せば自由に利用・改変できます。
+© 2026 根本卓哉（Takuya Nemoto）— [CC BY 4.0](LICENSE)。出典を示せば自由に利用・改変できます。
 
 ## 制作について
 
