@@ -1,0 +1,26 @@
+{
+  "title": "正義論とアルゴリズム — アルゴリズムによる判断をめぐる論点の整理",
+  "description": "アルゴリズムによる判断をめぐる論点を、政治哲学の正義論に接続して整理した日本語の資料。功利主義、義務論、リバタリアニズム、公正としての正義、共同体論、潜在能力アプローチという6つの立場と、公正性指標の両立不能性、差別的効果、説明可能性、答責性、自律とナッジという5つの論点を対応づける。どの立場が正しいかを決めず、論点ごとに評価が分かれる理由を示すことを方針とする。",
+  "upload_type": "publication",
+  "publication_type": "other",
+  "language": "jpn",
+  "license": "cc-by-4.0",
+  "access_right": "open",
+  "creators": [
+    {
+      "name": "Nemoto, Takuya",
+      "orcid": "0009-0000-1406-0547"
+    }
+  ],
+  "keywords": [
+    "正義論",
+    "アルゴリズム",
+    "AI倫理",
+    "公正性",
+    "政治哲学",
+    "algorithmic fairness",
+    "AI ethics",
+    "political philosophy",
+    "justice"
+  ]
+}

@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+title: 正義論とアルゴリズム — アルゴリズムによる判断をめぐる論点の整理
+message: この資料を引用する場合は、以下の情報をご利用ください。
+type: dataset
+authors:
+  - family-names: Nemoto
+    given-names: Takuya
+    orcid: "https://orcid.org/0009-0000-1406-0547"
+abstract: >-
+  アルゴリズムによる判断をめぐる論点を、政治哲学の正義論に接続して
+  整理した日本語の資料。6つの立場と5つの論点を対応づけ、
+  評価が分かれる理由を示す。
+keywords:
+  - 正義論
+  - アルゴリズム
+  - AI倫理
+  - 公正性
+  - 政治哲学
+license: CC-BY-4.0
+repository-code: "https://github.com/cpsbvbng26-dotcom/justice-and-algorithms"
+version: 1.0.0
+date-released: "2026-09-05"
