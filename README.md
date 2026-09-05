@@ -10,8 +10,6 @@
 この資料は、**どの立場が正しいかを決めません**。論点ごとに、主要な立場から
 どう見えるかを並べ、どこで意見が分かれるのかを示します。
 
-**読みやすい形の公開版** → [cpsbvbng26-dotcom.github.io/justice-and-algorithms](https://cpsbvbng26-dotcom.github.io/justice-and-algorithms/)
-
 ## 読み方
 
 はじめての方は **[この資料の読み方](docs/00-how-to-read.md)** から。
