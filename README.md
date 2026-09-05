@@ -58,6 +58,23 @@
 
 誤りの指摘や、立場の要約への異議は歓迎します。[CONTRIBUTING.md](CONTRIBUTING.md) をご覧ください。
 
+## 引用
+
+この資料は Zenodo にアーカイブされ、DOI が付与されています。
+
+> 根本卓哉 (2026). *正義論とアルゴリズム — アルゴリズムによる判断をめぐる論点の整理*. Zenodo. https://doi.org/10.5281/zenodo.22335676
+
+```bibtex
+@misc{nemoto2026justice,
+  author       = {Nemoto, Takuya},
+  title        = {正義論とアルゴリズム — アルゴリズムによる判断をめぐる論点の整理},
+  year         = {2026},
+  publisher    = {Zenodo},
+  doi          = {10.5281/zenodo.22335676},
+  url          = {https://doi.org/10.5281/zenodo.22335676}
+}
+```
+
 ## ライセンス
 
 [CC BY 4.0](LICENSE)。出典を示せば自由に利用・改変できます。
