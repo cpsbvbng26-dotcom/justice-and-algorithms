@@ -12,11 +12,33 @@
 
 ## 読み方
 
-はじめての方は [この資料の読み方](docs/00-how-to-read.md) から。
+はじめての方は **[この資料の読み方](docs/00-how-to-read.md)** から。
+全体を見渡すなら **[対応表](docs/map.md)** が早いです。
 
-- [正義をめぐる立場](docs/traditions/) — 功利主義、義務論、リバタリアニズム、公正としての正義、共同体論、潜在能力アプローチ
-- [アルゴリズムをめぐる論点](docs/issues/) — 公正性指標、差別的効果、説明可能性、答責性、自律
-- [対応表](docs/map.md) — どの論点で、どの立場が何を言うか
+### 正義をめぐる立場
+
+何を最終的な基準に置くか。6 つの立場を扱います。
+
+| | 基準 |
+| --- | --- |
+| [功利主義](docs/traditions/utilitarianism.md) | 効用の総和 |
+| [義務論](docs/traditions/deontology.md) | 人格の尊重 |
+| [リバタリアニズム](docs/traditions/libertarianism.md) | 自己所有と手続き |
+| [公正としての正義（ロールズ）](docs/traditions/rawls.md) | 最も不利な立場 |
+| [共同体論](docs/traditions/communitarianism.md) | 財の目的と共同体の価値 |
+| [潜在能力アプローチ](docs/traditions/capability.md) | 実質的な自由 |
+
+### アルゴリズムをめぐる論点
+
+技術的な問いと規範的な問いが交わる場所。5 つの論点を扱います。
+
+| | 何が争われているか |
+| --- | --- |
+| [公正性指標の両立不能性](docs/issues/fairness-metrics.md) | 妥当に見える公正性の定義が同時に満たせない |
+| [差別的効果](docs/issues/disparate-impact.md) | 保護属性を除いても差別的な結果が生じる |
+| [説明可能性](docs/issues/explainability.md) | 理由を示せない判断を人に用いてよいか |
+| [答責性](docs/issues/accountability.md) | 害が生じたとき誰が責任を負うか |
+| [自律とナッジ](docs/issues/autonomy.md) | 誘導はどこから操作になるか |
 
 ## 対応表（概観）
 
