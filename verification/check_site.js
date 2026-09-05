@@ -27,11 +27,19 @@ function walk(dir) {
   });
 }
 
-// <style> と <script> の中身は見ない。CSS のコメント区切りが * を含むため。
+/* 検査の対象から外すもの。
+ *
+ *   <style> <script>  CSS のコメント区切りが * を含む
+ *   <code> <pre>      コード例は Markdown 記法をそのまま載せて当然で、
+ *                     変換されずに残った記法とは区別しなければならない
+ *                     （README が「壊れて出ていた例」を引用しているのがこれ）
+ */
 function bodyOnly(html) {
   return html
     .replace(/<style[\s\S]*?<\/style>/g, '')
-    .replace(/<script[\s\S]*?<\/script>/g, '');
+    .replace(/<script[\s\S]*?<\/script>/g, '')
+    .replace(/<pre[\s\S]*?<\/pre>/g, '')
+    .replace(/<code[\s\S]*?<\/code>/g, '');
 }
 
 const failures = [];
