@@ -40,9 +40,16 @@ function inline(text) {
 
   s = esc(s);
 
-  // 画像。リンクの中に置かれる（バッジ）ことがあるので、リンクより先に変換する
-  s = s.replace(/!\[([^\]]*)\]\(([^)\s]+)\)/g,
-    '<img src="$2" alt="$1" loading="lazy">');
+  // 画像。リンクの中に置かれる（バッジ）ことがあるので、リンクより先に変換する。
+  //
+  // 外部ホストの画像は <img> にせず、代替テキストだけを残す。生成したサイトが
+  // third-party へリクエストを出さないようにするため。README のバッジはこの経路を
+  // 通るので、GitHub 上ではバッジのまま、サイト上ではリンクつきの文字列になる。
+  // AI 開示のような中身のある記述が、画像の読み込み可否に左右されないほうがよい。
+  s = s.replace(/!\[([^\]]*)\]\(([^)\s]+)\)/g, function (m, alt, src) {
+    if (/^https?:/.test(src)) return alt;
+    return '<img src="' + src + '" alt="' + alt + '" loading="lazy">';
+  });
 
   s = s.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, function (m, label, href) {
     let to = href;

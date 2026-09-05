@@ -90,16 +90,17 @@ for (const file of doiPages) {
 }
 check('論点編の各ページに文献の識別子リンクがある', missing);
 
-// 参考: 外部から読み込んでいる画像の一覧（判定はしない）
-const hosts = new Set();
+// 5. 生成物が third-party へリクエストを出していないこと。
+//    バッジのような外部画像は build.js が代替テキストに落とす方針なので、
+//    <img src="http..."> が残っていたらその方針が崩れている。
+const external = [];
 for (const file of pages) {
   const html = fs.readFileSync(file, 'utf8');
-  for (const m of html.matchAll(/<img[^>]+src="https?:\/\/([^/"]+)/g)) hosts.add(m[1]);
+  for (const m of html.matchAll(/<img[^>]+src="https?:\/\/([^/"]+)[^"]*"/g)) {
+    external.push(path.relative(ROOT, file) + ': ' + m[1]);
+  }
 }
-console.log();
-console.log(hosts.size
-  ? '  参考  外部から読み込んでいる画像: ' + [...hosts].join(', ')
-  : '  参考  外部から読み込んでいる画像はありません');
+check('外部ホストから画像を読み込んでいない', external);
 
 console.log();
 if (failures.length) {
