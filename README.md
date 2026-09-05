@@ -10,6 +10,8 @@
 この資料は、**どの立場が正しいかを決めません**。論点ごとに、主要な立場から
 どう見えるかを並べ、どこで意見が分かれるのかを示します。
 
+**読みやすい形の公開版** → [cpsbvbng26-dotcom.github.io/justice-and-algorithms](https://cpsbvbng26-dotcom.github.io/justice-and-algorithms/)
+
 ## 読み方
 
 はじめての方は **[この資料の読み方](docs/00-how-to-read.md)** から。
@@ -74,6 +76,17 @@
   url          = {https://doi.org/10.5281/zenodo.22335676}
 }
 ```
+
+## サイトの生成
+
+`docs/` の Markdown から、読み物としての HTML を生成できます。
+
+```bash
+node build.js     # site/ に出力されます
+```
+
+依存パッケージはありません。`main` への push で GitHub Actions が自動的に
+ビルドし、GitHub Pages へ配信します。
 
 ## ライセンス
 

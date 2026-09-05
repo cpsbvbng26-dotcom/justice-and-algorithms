@@ -1,0 +1,205 @@
+:root {
+  --bg: #faf9f7;
+  --card: #ffffff;
+  --text: #17171a;
+  --muted: #4b4b52;
+  --faint: #8b8b93;
+  --line: #e6e4df;
+  --line-soft: #efedea;
+  --accent: #8a6a3d;
+  --accent-soft: rgba(138, 106, 61, .08);
+  --header-bg: rgba(250, 249, 247, .88);
+}
+
+:root[data-theme="dark"] {
+  --bg: #121214;
+  --card: #191919;
+  --text: #ececee;
+  --muted: #b3b3ba;
+  --faint: #7a7a82;
+  --line: #2a2a2d;
+  --line-soft: #232326;
+  --accent: #b08d57;
+  --accent-soft: rgba(176, 141, 87, .12);
+  --header-bg: rgba(18, 18, 20, .88);
+}
+
+html { color-scheme: light; }
+:root[data-theme="dark"] { color-scheme: dark; }
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic", system-ui, sans-serif;
+  line-height: 1.95;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color .25s, color .25s;
+}
+
+.serif {
+  font-family: "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", Georgia, serif;
+  font-feature-settings: "palt" 1;
+}
+
+.wrap { max-width: 44rem; margin: 0 auto; padding: 0 1.5rem; }
+
+a { color: inherit; }
+
+/* ---------- ヘッダー ---------- */
+header {
+  position: sticky; top: 0; z-index: 20;
+  background: var(--header-bg);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+.head-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  padding-top: .9rem; padding-bottom: .9rem;
+  max-width: 60rem;
+}
+.mark {
+  font-size: .95rem; letter-spacing: .06em; color: var(--accent);
+  text-decoration: none; white-space: nowrap;
+}
+.nav { display: flex; align-items: center; gap: 1.2rem; }
+.nav a {
+  font-size: .8rem; color: var(--muted); text-decoration: none;
+  letter-spacing: .04em; white-space: nowrap; transition: color .15s;
+}
+.nav a:hover { color: var(--accent); }
+
+.theme-toggle {
+  width: 1.9rem; height: 1.9rem; flex: none;
+  display: grid; place-items: center;
+  font: inherit; font-size: .85rem; line-height: 1; cursor: pointer;
+  color: var(--muted); background: transparent;
+  border: 1px solid var(--line); border-radius: 999px;
+  transition: color .15s, border-color .15s, background-color .15s;
+}
+.theme-toggle:hover { color: var(--text); border-color: var(--accent); background: var(--accent-soft); }
+
+/* ---------- 本文 ---------- */
+.prose { padding: 3.5rem 1.5rem 5rem; }
+
+.prose h1 {
+  font-family: "Hiragino Mincho ProN", "Yu Mincho", Georgia, serif;
+  font-feature-settings: "palt" 1;
+  font-size: clamp(1.8rem, 5vw, 2.4rem);
+  font-weight: 600; letter-spacing: .03em; line-height: 1.5;
+  margin: 0 0 2.5rem;
+  text-wrap: balance;
+}
+.prose h2 {
+  font-size: 1.2rem; font-weight: 600; letter-spacing: .04em;
+  margin: 3.5rem 0 1.2rem;
+  padding-bottom: .5rem;
+  border-bottom: 1px solid var(--line);
+}
+.prose h3 {
+  font-size: 1rem; font-weight: 600; letter-spacing: .03em;
+  margin: 2.5rem 0 .8rem;
+  color: var(--accent);
+}
+.prose h4 { font-size: .92rem; font-weight: 600; margin: 2rem 0 .6rem; }
+
+.prose p { margin: 0 0 1.4rem; color: var(--muted); text-wrap: pretty; }
+.prose strong { color: var(--text); font-weight: 600; }
+
+.prose ul, .prose ol { margin: 0 0 1.6rem; padding-left: 1.4rem; color: var(--muted); }
+.prose li { margin-bottom: .6rem; }
+.prose li::marker { color: var(--faint); }
+
+.prose a { color: var(--text); text-decoration: none; border-bottom: 1px solid var(--line); }
+.prose a:hover { color: var(--accent); border-color: var(--accent); }
+
+.prose hr { height: 1px; background: var(--line); border: 0; margin: 3rem 0; }
+
+.prose blockquote {
+  margin: 0 0 1.6rem;
+  padding: .2rem 0 .2rem 1.2rem;
+  border-left: 2px solid var(--accent);
+  color: var(--muted);
+}
+
+.prose code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: .86em;
+  padding: .12rem .38rem;
+  border-radius: .3rem;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.prose pre {
+  margin: 0 0 1.6rem;
+  padding: 1rem 1.2rem;
+  overflow-x: auto;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: .6rem;
+}
+.prose pre code { padding: 0; background: none; color: var(--muted); font-size: .82rem; }
+
+/* ---------- 表 ---------- */
+.table-wrap { overflow-x: auto; margin: 0 0 1.8rem; }
+.prose table { border-collapse: collapse; width: 100%; font-size: .86rem; }
+.prose th, .prose td {
+  text-align: left; vertical-align: top;
+  padding: .7rem .9rem;
+  border-bottom: 1px solid var(--line-soft);
+}
+.prose th {
+  font-weight: 600; font-size: .76rem; letter-spacing: .06em;
+  color: var(--faint);
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+.prose td { color: var(--muted); }
+.prose tbody tr:hover { background: var(--accent-soft); }
+
+/* ---------- フッター ---------- */
+footer { border-top: 1px solid var(--line); }
+.foot {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: .8rem; padding: 2.2rem 1.5rem;
+  font-size: .74rem; color: var(--faint);
+  max-width: 60rem;
+}
+.foot a { color: var(--faint); }
+.foot a:hover { color: var(--accent); }
+
+/* ---------- 操作 ---------- */
+:where(a, button):focus-visible {
+  outline: 2px solid var(--accent); outline-offset: 3px; border-radius: .3rem;
+}
+.skip-link {
+  position: absolute; left: 1rem; top: -3rem; z-index: 50;
+  padding: .55rem 1rem;
+  color: var(--bg); background: var(--text);
+  text-decoration: none; font-size: .82rem; border-radius: .5rem;
+  transition: top .15s;
+}
+.skip-link:focus { top: 1rem; }
+
+@media (max-width: 34rem) {
+  .head-row { flex-wrap: wrap; align-items: flex-start; row-gap: .5rem; }
+  .nav { width: 100%; flex-wrap: wrap; gap: .9rem; }
+  .nav a { font-size: .74rem; }
+  .wrap { padding: 0 1.1rem; }
+  .prose { padding: 2.5rem 1.1rem 3.5rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: .01ms !important; }
+}
+
+@media print {
+  @page { margin: 16mm; }
+  header, footer, .skip-link { display: none !important; }
+  body { background: #fff; color: #000; }
+  .prose { padding: 0; }
+  .prose h2, .prose h3 { break-after: avoid; }
+  .prose table, .prose blockquote, .prose pre { break-inside: avoid; }
+}
