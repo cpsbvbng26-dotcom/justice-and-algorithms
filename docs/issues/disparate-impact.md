@@ -50,7 +50,13 @@
 ## 文献
 
 - Solon Barocas, Andrew Selbst, "Big Data's Disparate Impact",
-  *California Law Review*, 2016
+  *California Law Review* 104, 671–732, 2016 —
+  SSRN [10.2139/ssrn.2477899](https://doi.org/10.2139/ssrn.2477899)
 - Joy Buolamwini, Timnit Gebru, "Gender Shades: Intersectional Accuracy
-  Disparities in Commercial Gender Classification", 2018
-- Andrew Selbst et al., "Fairness and Abstraction in Sociotechnical Systems", 2019
+  Disparities in Commercial Gender Classification",
+  *PMLR* 81, 77–91, 2018 —
+  <https://proceedings.mlr.press/v81/buolamwini18a.html>
+- Andrew D. Selbst, danah boyd, Sorelle A. Friedler, Suresh Venkatasubramanian,
+  Janet Vertesi, "Fairness and Abstraction in Sociotechnical Systems",
+  *ACM Conference on Fairness, Accountability, and Transparency*, 2019, 59–68 —
+  [10.1145/3287560.3287598](https://doi.org/10.1145/3287560.3287598)

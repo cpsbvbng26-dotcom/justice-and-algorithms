@@ -50,8 +50,15 @@
 
 - Cynthia Rudin, "Stop Explaining Black Box Machine Learning Models for
   High Stakes Decisions and Use Interpretable Models Instead",
-  *Nature Machine Intelligence*, 2019
+  *Nature Machine Intelligence* 1, 206–215, 2019 —
+  [10.1038/s42256-019-0048-x](https://doi.org/10.1038/s42256-019-0048-x)
 - Sandra Wachter, Brent Mittelstadt, Chris Russell,
-  "Counterfactual Explanations without Opening the Black Box", 2017
-- Brent Mittelstadt et al., "The Ethics of Algorithms: Mapping the Debate",
-  *Big Data & Society*, 2016
+  "Counterfactual Explanations without Opening the Black Box:
+  Automated Decisions and the GDPR",
+  *Harvard Journal of Law & Technology* 31(2), 841–887, 2018 —
+  SSRN [10.2139/ssrn.3063289](https://doi.org/10.2139/ssrn.3063289)
+  （プレプリント [arXiv:1711.00399](https://arxiv.org/abs/1711.00399), 2017）
+- Brent Mittelstadt, Patrick Allo, Mariarosaria Taddeo, Sandra Wachter,
+  Luciano Floridi, "The Ethics of Algorithms: Mapping the Debate",
+  *Big Data & Society* 3(2), 2016 —
+  [10.1177/2053951716679679](https://doi.org/10.1177/2053951716679679)

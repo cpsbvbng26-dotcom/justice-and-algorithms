@@ -44,8 +44,13 @@
 
 ## 文献
 
-- Helen Nissenbaum, "Accountability in a Computerized Society", 1996
+- Helen Nissenbaum, "Accountability in a Computerized Society",
+  *Science and Engineering Ethics* 2, 25–42, 1996 —
+  [10.1007/BF02639315](https://doi.org/10.1007/BF02639315)
 - Madeleine Clare Elish, "Moral Crumple Zones: Cautionary Tales in
-  Human-Robot Interaction", 2019
+  Human-Robot Interaction",
+  *Engaging Science, Technology, and Society* 5, 40–60, 2019 —
+  [10.17351/ests2019.260](https://doi.org/10.17351/ests2019.260)
 - Luciano Floridi, Josh Cowls, "A Unified Framework of Five Principles
-  for AI in Society", 2019
+  for AI in Society", *Harvard Data Science Review* 1(1), 2019 —
+  [10.1162/99608f92.8cd550d1](https://doi.org/10.1162/99608f92.8cd550d1)

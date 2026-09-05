@@ -57,7 +57,12 @@ function inline(text) {
     return '<a href="' + to + '"' + attrs + '>' + label + '</a>';
   });
 
+  // <https://example.com/> の形の自動リンク。esc 済みなので山括弧は実体参照になっている
+  s = s.replace(/&lt;(https?:\/\/[^\s&]+)&gt;/g,
+    '<a href="$1" target="_blank" rel="noopener">$1</a>');
+
   s = s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  s = s.replace(/(^|[^*])\*([^*\n]+)\*/g, '$1<em>$2</em>');
 
   return s.replace(/%%CODE(\d+)%%/g, function (m, i) { return codes[Number(i)]; });
 }

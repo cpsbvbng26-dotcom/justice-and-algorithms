@@ -49,7 +49,11 @@
 
 ## 文献
 
-- Richard Thaler, Cass Sunstein, *Nudge*, 2008
+- Richard H. Thaler, Cass R. Sunstein, *Nudge: Improving Decisions About
+  Health, Wealth, and Happiness*, Yale University Press, 2008
 - Daniel Susser, Beate Roessler, Helen Nissenbaum,
-  "Technology, Autonomy, and Manipulation", 2019
-- Cass Sunstein, *Why Nudge?*, 2014
+  "Technology, Autonomy, and Manipulation",
+  *Internet Policy Review* 8(2), 2019 —
+  [10.14763/2019.2.1410](https://doi.org/10.14763/2019.2.1410)
+- Cass R. Sunstein, *Why Nudge? The Politics of Libertarian Paternalism*,
+  Yale University Press, 2014

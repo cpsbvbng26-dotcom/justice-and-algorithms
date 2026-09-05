@@ -58,8 +58,17 @@
 ## 文献
 
 - Jon Kleinberg, Sendhil Mullainathan, Manish Raghavan,
-  "Inherent Trade-Offs in the Fair Determination of Risk Scores", 2016
+  "Inherent Trade-Offs in the Fair Determination of Risk Scores",
+  *ITCS 2017*, LIPIcs 67, 43:1–43:23 —
+  [10.4230/LIPIcs.ITCS.2017.43](https://doi.org/10.4230/LIPIcs.ITCS.2017.43)
+  （プレプリント [arXiv:1609.05807](https://arxiv.org/abs/1609.05807), 2016）
 - Alexandra Chouldechova,
-  "Fair Prediction with Disparate Impact: A Study of Bias in Recidivism Prediction Instruments", 2017
-- Julia Angwin et al., "Machine Bias", ProPublica, 2016
-- Sam Corbett-Davies, Sharad Goel, "The Measure and Mismeasure of Fairness", 2018
+  "Fair Prediction with Disparate Impact: A Study of Bias in Recidivism Prediction Instruments",
+  *Big Data* 5(2), 153–163, 2017 —
+  [10.1089/big.2016.0047](https://doi.org/10.1089/big.2016.0047)
+- Julia Angwin, Jeff Larson, Surya Mattu, Lauren Kirchner, "Machine Bias",
+  ProPublica, 2016年5月23日 —
+  <https://www.propublica.org/article/machine-bias-risk-assessments-in-criminal-sentencing>
+- Sam Corbett-Davies, Sharad Goel,
+  "The Measure and Mismeasure of Fairness: A Critical Review of Fair Machine Learning",
+  2018 — [arXiv:1808.00023](https://arxiv.org/abs/1808.00023)
