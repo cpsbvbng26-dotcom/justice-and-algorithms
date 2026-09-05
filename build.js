@@ -40,6 +40,10 @@ function inline(text) {
 
   s = esc(s);
 
+  // 画像。リンクの中に置かれる（バッジ）ことがあるので、リンクより先に変換する
+  s = s.replace(/!\[([^\]]*)\]\(([^)\s]+)\)/g,
+    '<img src="$2" alt="$1" loading="lazy">');
+
   s = s.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, function (m, label, href) {
     let to = href;
     let external = /^https?:/.test(href);

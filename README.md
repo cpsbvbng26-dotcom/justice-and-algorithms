@@ -1,5 +1,7 @@
 # 正義論とアルゴリズム
 
+[![検査](https://github.com/cpsbvbng26-dotcom/justice-and-algorithms/actions/workflows/verify.yml/badge.svg)](https://github.com/cpsbvbng26-dotcom/justice-and-algorithms/actions/workflows/verify.yml)
+
 アルゴリズムによる判断をめぐる論点を、**政治哲学の正義論に接続して整理する**資料です。
 
 「このアルゴリズムは公正か」という問いは、技術的な問いに見えて、実は

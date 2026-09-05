@@ -1,0 +1,19 @@
+name: 検査
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  site:
+    name: 生成物に記法の取りこぼしがないか
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node build.js
+      - run: node verification/check_site.js
