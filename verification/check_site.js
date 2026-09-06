@@ -110,6 +110,35 @@ for (const file of pages) {
 }
 check('外部ホストから画像を読み込んでいない', external);
 
+
+// 6. Content-Security-Policy。build.js が生成のたびに埋める。
+//    無い／緩んでいる／ページの中身と食い違う、を落とす。
+const crypto = require('crypto');
+const sha = (t) => "'sha256-" + crypto.createHash('sha256').update(t, 'utf8').digest('base64') + "'";
+const hashesIn = (html, tag) => {
+  const re = new RegExp('<' + tag + '(?![^>]*\\bsrc=)[^>]*>([\\s\\S]*?)</' + tag + '>', 'g');
+  const out = []; let m;
+  while ((m = re.exec(html)) !== null) out.push(sha(m[1]));
+  return out;
+};
+
+const noCsp = [], weak = [], mismatch = [];
+for (const file of pages) {
+  const html = fs.readFileSync(file, 'utf8');
+  const rel = path.relative(ROOT, file);
+  const m = /<meta http-equiv="Content-Security-Policy" content="([^"]*)">/.exec(html);
+  if (!m) { noCsp.push(rel); continue; }
+  const csp = m[1];
+  if (csp.indexOf("default-src 'none'") !== 0) weak.push(rel + ": default-src が 'none' でない");
+  if (/unsafe-inline|unsafe-eval|unsafe-hashes|\*/.test(csp)) weak.push(rel + ': 緩められている');
+  for (const h of hashesIn(html, 'style').concat(hashesIn(html, 'script'))) {
+    if (csp.indexOf(h) < 0) mismatch.push(rel);
+  }
+}
+check('すべてのページに CSP がある', noCsp);
+check('CSP が緩められていない', weak);
+check('CSP のハッシュがページの中身と一致する', [...new Set(mismatch)]);
+
 console.log();
 if (failures.length) {
   console.log(failures.length + ' 項目が通りませんでした。');
