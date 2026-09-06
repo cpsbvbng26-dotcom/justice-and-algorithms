@@ -128,8 +128,8 @@ node verification/check_site.js
 [![Assisted by Grok](https://img.shields.io/badge/Assisted%20by-Grok-111111?style=for-the-badge)](https://grok.com)
 
 本資料の草稿は、AIコーディング支援ツール **Claude Code**（Anthropic）を
-使用して作成しています。以降の最適化と運用支援には **Grok**（xAI）を
-用いています。内容の確認、立場の要約の妥当性の判断、および
+使用して作成しています。公開する文章の言い回しについて、**Grok**（xAI）に
+候補を出させました。内容の確認、立場の要約の妥当性の判断、および
 公開の可否は著者・根本卓哉（Takuya Nemoto）が行っています。AI は著作者ではありません。
 
 制作過程はリポジトリの履歴から確認できます（`git log --author=Claude`、

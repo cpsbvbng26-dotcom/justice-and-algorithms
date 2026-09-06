@@ -16,4 +16,6 @@ jobs:
         with:
           node-version: 22
       - run: node build.js
+      - name: 誤変換とバッジ記法
+        run: node verification/check_text.js
       - run: node verification/check_site.js
