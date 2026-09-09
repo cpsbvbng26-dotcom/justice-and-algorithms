@@ -122,6 +122,15 @@ node verification/check_site.js
 
 © 2026 根本卓哉（Takuya Nemoto）— [CC BY 4.0](LICENSE)。出典を示せば自由に利用・改変できる。
 
+| 対象 | ライセンス |
+| --- | --- |
+| 散文・論文・構造化データ —— `README.md`、本文 | [CC BY 4.0](LICENSE) |
+| 実装 —— `verification/` の検査スクリプトと生成のスクリプト | [MIT](LICENSE-CODE) |
+
+**実装が MIT であることは、これまでどこにも書いていなかった。**
+`LICENSE` は CC BY 4.0 しか置いておらず、検査スクリプトを CC BY 4.0 だと読む余地が
+あった。ライセンスを変えたのではない。書いていなかったものを書いた。
+
 ## 制作について
 
 [![Built with Claude Code](https://img.shields.io/badge/Built%20with-Claude%20Code-D97757?style=for-the-badge)](https://claude.com/claude-code)
