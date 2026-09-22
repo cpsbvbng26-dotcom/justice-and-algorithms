@@ -77,6 +77,8 @@ Barocas & Selbst については、法学雑誌側の DOI が URL で裏づけ�
 
 この資料は Zenodo にアーカイブされ、DOI が付与されています。
 
+同じ本文が HAL にもあります（[hal-05759717](https://hal.science/hal-05759717)）。引用は Zenodo の DOI を用います。
+
 > 根本卓哉 (2026). *正義論とアルゴリズム — アルゴリズムによる判断をめぐる論点の整理*. Zenodo. https://doi.org/10.5281/zenodo.22335676
 
 ```bibtex
