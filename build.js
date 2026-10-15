@@ -81,7 +81,7 @@ function inline(text) {
   // 外部ホストの画像は <img> にせず、代替テキストだけを残す。生成したサイトが
   // third-party へリクエストを出さないようにするため。README のバッジはこの経路を
   // 通るので、GitHub 上ではバッジのまま、サイト上ではリンクつきの文字列になる。
-  // AI 開示のような中身のある記述が、画像の読み込み可否に左右されないほうがよい。
+  // 言語モデル利用の開示のような中身のある記述が、画像の読み込み可否に左右されないほうがよい。
   s = s.replace(/!\[([^\]]*)\]\(([^)\s]+)\)/g, function (m, alt, src) {
     if (/^https?:/.test(src)) return alt;
     return '<img src="' + src + '" alt="' + alt + '" loading="lazy">';

@@ -105,7 +105,7 @@ node build.js     # site/ に出力されます
 
 生成したサイトは third-party へリクエストを出しません。 上のバッジのような外部画像は、
 `build.js` が代替テキストに落とす —— GitHub 上ではバッジのまま、サイト上では
-「Built with Claude Code」というリンクつきの文字列になります。AI 開示のような中身のある
+「Built with Claude Code」というリンクつきの文字列になります。言語モデル利用の開示のような中身のある
 記述が、画像の読み込み可否に左右されるべきではないためです。
 
 ```bash
@@ -138,10 +138,10 @@ node verification/check_site.js
 [![Built with Claude Code](https://img.shields.io/badge/Built%20with-Claude%20Code-D97757?style=for-the-badge)](https://claude.com/claude-code)
 [![Assisted by Grok](https://img.shields.io/badge/Assisted%20by-Grok-111111?style=for-the-badge)](https://grok.com)
 
-本資料の草稿は、AIコーディング支援ツール **Claude Code**（Anthropic）を
+本資料の草稿は、言語モデルによるコーディング支援ツール **Claude Code**（Anthropic）を
 使用して作成しています。公開する文章の言い回しについて、**Grok**（xAI）に
 候補を出させました。内容の確認、立場の要約の妥当性の判断、および
-公開の可否は著者・根本卓哉（Takuya Nemoto）が行っています。AI は著作者ではありません。
+公開の可否は著者・根本卓哉（Takuya Nemoto）が行っています。言語モデルは著作者ではありません。
 
 制作過程はリポジトリの履歴から確認できる（`git log --author=Claude`、
 および各コミットの `Claude-Session:` / `Assisted-by:` トレーラ）。
