@@ -83,6 +83,8 @@ header {
 
 /* ---------- 本文 ---------- */
 .prose { padding: 3.5rem 1.5rem 5rem; }
+/* 長い URL や DOI は、画面の幅で折り返す。折り返せないと、360px の画面で頁ごと横に流れていた（最大 118px）。 */
+.prose { overflow-wrap: break-word; }
 
 .prose h1 {
   font-family: "Hiragino Mincho ProN", "Yu Mincho", Georgia, serif;
