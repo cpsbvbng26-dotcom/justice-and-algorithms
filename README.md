@@ -112,6 +112,12 @@ node build.js     # site/ に出力されます
 node verification/check_site.js
 ```
 
+```bash
+node verification/check_keyboard.js
+```
+
+ブラウザを起こし、生成した頁を Tab で辿ります。焦点の枠と辿る順を確かめ、広い幅から狭い幅まで、頁が横へはみ出さないかを測ります。playwright と Chromium が要ります。
+
 生成物 17 ページを 5 項目で検査します。アスタリスクのまま残った強調、山括弧のまま残った
 自動リンク、Markdown のまま残ったリンク記法、論点編に文献の識別子リンクがあること、そして
 外部ホストから画像を読み込んでいないこと。push ごとに GitHub Actions が実行しています。
