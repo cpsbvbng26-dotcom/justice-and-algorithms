@@ -19,3 +19,21 @@ jobs:
       - name: 誤変換とバッジ記法
         run: node verification/check_text.js
       - run: node verification/check_site.js
+
+  # ブラウザが要る検査は別の仕事にする。ブラウザの都合で落ちたのか、中身が壊れたのかを見分けるため。
+  keyboard:
+    name: キーボードで辿れるか・どの幅でも読めるか
+    # ubuntu 26.04 では playwright 1.56.1 が Chromium を入れられない。cpsbvbng26-dotcom と同じく 24.04 に置く。
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node build.js
+      - name: playwright と Chromium を入れる
+        run: |
+          npm install -g playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Tab で辿り、五つの幅で測る
+        run: NODE_PATH="$(npm root -g)" node verification/check_keyboard.js
