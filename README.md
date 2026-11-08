@@ -151,3 +151,5 @@ node verification/check_keyboard.js
 
 制作過程はリポジトリの履歴から確認できる（`git log --author=Claude`、
 および各コミットの `Claude-Session:` / `Assisted-by:` トレーラ）。
+
+責任の範囲は、[免責事項](https://github.com/cpsbvbng26-dotcom/cpsbvbng26-dotcom/blob/main/DISCLAIMER.md)に定めています。
