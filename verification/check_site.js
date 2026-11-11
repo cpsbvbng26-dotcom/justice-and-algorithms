@@ -141,7 +141,134 @@ check('すべてのページに CSP がある', noCsp);
 check('CSP が緩められていない', weak);
 check('CSP のハッシュがページの中身と一致する', [...new Set(mismatch)]);
 
-// 7. README が名乗るページ数と項目数が、実際と合うこと（決めごと 5）。
+// 7. 種類と状態の札。README の題のすぐ下に一行置く。目録と食い違えば横断の検査が落とす。
+//    ここでは札の形と、引用情報の type を見る。
+{
+  const rm = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8').split('\n');
+  const cff = fs.readFileSync(path.join(ROOT, 'CITATION.cff'), 'utf8');
+  const bad = [];
+  if (!(/^# /.test(rm[0]) && rm[1] === '' && rm[2] === '種類：エッセイ　状態：凍結')) bad.push('README の 3 行目: ' + rm[2]);
+  if (!/^type: dataset$/m.test(cff)) bad.push('CITATION.cff の type: ' + ((/^type: (.*)$/m.exec(cff) || [])[1] || '無い'));
+  check('README の題の下に種類と状態の札があり、CITATION.cff の type が dataset である', bad);
+}
+
+// 8. 立場と論点の図。build.js が docs/map.md から描く。ここでは表を独立に読み直し、
+//    図の線の組が表と一つも違わないことを見る。立場はすべて図に出ていること。
+{
+  const md = fs.readFileSync(path.join(ROOT, 'docs', 'map.md'), 'utf8');
+  const rows = (h) => {
+    const ls = md.slice(md.indexOf(h)).split('\n');
+    const k = ls.findIndex((l) => l.startsWith('|'));
+    const out = [];
+    for (let j = k + 2; j < ls.length && ls[j].startsWith('|'); j++) out.push(ls[j].split('|').slice(1, -1).map((c) => c.trim()));
+    return out;
+  };
+  const name = (c) => (/^\[([^\]]+)\]/.exec(c) || [, c])[1];
+  const doc = (c) => (/\]\(([^)]+)\)/.exec(c) || [, ''])[1];
+  const trad = rows('## 何を最終的な基準に置くか').map((r) => ({
+    name: name(r[0]),
+    title: (/^#\s+(.*)$/m.exec(fs.readFileSync(path.join(ROOT, 'docs', doc(r[0])), 'utf8')) || [, ''])[1]
+  }));
+  const want = new Set();
+  const unknown = [];
+  for (const r of rows('## 論点との交差')) {
+    for (const n of r[1].split('/').map((x) => x.trim())) {
+      const t = trad.find((x) => x.name === n) || trad.find((x) => x.title.indexOf(n) >= 0);
+      if (!t) { unknown.push(n); continue; }
+      want.add(t.name + ' → ' + name(r[0]));
+    }
+  }
+  const html = fs.readFileSync(path.join(SITE, 'index.html'), 'utf8');
+  const fig = (/<figure class="map-figure">[\s\S]*?<\/figure>/.exec(html) || [''])[0];
+  const got = new Set([...fig.matchAll(/<line data-from="([^"]+)" data-to="([^"]+)"/g)].map((m) => m[1] + ' → ' + m[2]));
+  const nodes = [...fig.matchAll(/<text data-node="立場"[^>]*>([^<]+)<\/text>/g)].map((m) => m[1]);
+  const hits = [];
+  if (!fig) hits.push('index.html に図が無い');
+  if (!/<title id="map-title">/.test(fig) || !/<desc id="map-desc">/.test(fig)) hits.push('図に題と説明が無い');
+  unknown.forEach((n) => hits.push('交差の表の「' + n + '」が立場の表に無い'));
+  [...want].filter((x) => !got.has(x)).forEach((x) => hits.push('図に無い線: ' + x));
+  [...got].filter((x) => !want.has(x)).forEach((x) => hits.push('表に無い線: ' + x));
+  trad.filter((t) => nodes.indexOf(t.name) < 0).forEach((t) => hits.push('図に無い立場: ' + t.name));
+  check('入口の図の線が、対応表の「論点との交差」と一致する', hits);
+}
+
+// 9. 読むのにかかる時間の目安。build.js が字数から数えて頁に書く。数え直して突き合わせる。
+{
+  const hits = [];
+  for (const file of pages) {
+    const html = fs.readFileSync(file, 'utf8');
+    const main = (/<main[^>]*>([\s\S]*?)<\/main>/.exec(html) || [, ''])[1];
+    const m = /<p class="reading-time">読むのにかかる時間の目安は約 (\d+) 分です（本文 (\d+) 字を、一分に (\d+) 字として build.js が数えました）。<\/p>/.exec(main);
+    const n = main
+      .replace(/<p class="reading-time">[\s\S]*?<\/p>/, '')
+      .replace(/<pre[\s\S]*?<\/pre>/g, '')
+      .replace(/<figure[\s\S]*?<\/figure>/g, '')
+      .replace(/<[^>]*>/g, '')
+      .replace(/&[a-z]+;|&#\d+;/g, 'x')
+      .replace(/\s+/g, '').length;
+    if (!m) hits.push(path.relative(ROOT, file) + ': 目安が無い');
+    else if (Number(m[2]) !== n || Number(m[1]) !== Math.ceil(n / Number(m[3])) || m[3] !== '500') {
+      hits.push(path.relative(ROOT, file) + ': 名乗り ' + m[1] + ' 分・' + m[2] + ' 字 / 実際 ' + Math.ceil(n / 500) + ' 分・' + n + ' 字');
+    }
+  }
+  check('すべての頁に読む時間の目安があり、字数から数え直したものと合う', hits);
+}
+
+// 10. 「この資料が言っていないこと」は、資料が自分で断っていることだけを集める。
+//     各行が根拠にした文が、指した先に実際にあること。
+{
+  const rm = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
+  const read = (f) => fs.readFileSync(path.join(ROOT, f), 'utf8').replace(/\*\*/g, '').replace(/\s+/g, '');
+  const 根拠 = [
+    ['README.md', 'この資料は、どの立場が正しいかを決めません。'],
+    ['docs/00-how-to-read.md', 'どの立場が正しいかを決めません。'],
+    ['docs/00-how-to-read.md', 'また、特定の企業や製品を評価しません。'],
+    ['docs/map.md', '結論そのものではなく、結論に至る根拠の違いに注目してください。'],
+    ['README.md', '各立場の要約は入門的な水準で、原典の議論を単純化しています'],
+    ['README.md', '専門的な研究者ではありません'],
+    ['.zenodo.json', 'Not peer-reviewed.']
+  ];
+  const i = rm.indexOf('## この資料が言っていないこと');
+  const 行 = i < 0 ? [] : rm.slice(i, rm.indexOf('\n## ', i + 1)).split('\n').filter((l) => l.startsWith('- '));
+  const hits = 根拠.filter(([f, t]) => read(f).indexOf(t.replace(/\s+/g, '')) < 0).map(([f, t]) => f + ' に「' + t + '」が無い');
+  if (行.length !== 6) hits.push('行の数 ' + 行.length + '（根拠の表は 6 行を前提にしている）');
+  for (const l of 行) for (const m of l.matchAll(/\]\(([^)]+)\)/g)) if (!fs.existsSync(path.join(ROOT, m[1]))) hits.push('指した先が無い: ' + m[1]);
+  check('「この資料が言っていないこと」の各行の根拠が、指した先にある', hits);
+}
+
+// 11. 外部の反応は、外部評価の記録から写す。記録の所在へのリンクがあること。
+//     兄弟ディレクトリに cpsbvbng26-dotcom があれば（ECOSYSTEM_ROOT でも指せる）、記録の
+//     「出した先」の表の行が、写した行と一字一句同じであることと、「受けた評価」に行が無いことを見る。
+{
+  const SRC = 'https://github.com/cpsbvbng26-dotcom/cpsbvbng26-dotcom/blob/main/docs/external-evaluations.md';
+  const rm = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
+  const hits = [];
+  if (rm.indexOf('](' + SRC + ')') < 0) hits.push('記録へのリンクが無い');
+  const mine = rm.split('\n').filter((l) => l.startsWith('| MERLOT'));
+  if (mine.length !== 1) hits.push('写した行が無い');
+  const eco = process.env.ECOSYSTEM_ROOT || path.resolve(ROOT, '..');
+  const f = path.join(eco, 'cpsbvbng26-dotcom', 'docs', 'external-evaluations.md');
+  if (fs.existsSync(f)) {
+    const t = fs.readFileSync(f, 'utf8');
+    const table = (h) => {
+      const ls = t.slice(t.indexOf(h)).split('\n');
+      const k = ls.findIndex((l) => l.startsWith('|'));
+      const out = [];
+      for (let j = k + 2; j < ls.length && ls[j].startsWith('|'); j++) out.push(ls[j].split('|').slice(1, -1).map((c) => c.trim().replace(/\*\*/g, '')));
+      return out;
+    };
+    const 出 = table('## 出した先').filter((r) => r[1] === '正義論とアルゴリズム');
+    const 受 = table('## 受けた評価').filter((r) => r[2] === '正義論とアルゴリズム');
+    const 写 = mine.map((l) => l.split('|').slice(1, -1).map((c) => c.trim()).join(' | '));
+    const 元 = 出.map((r) => [r[0], r[2], r[3]].join(' | '));
+    if (写.join('\n') !== 元.join('\n')) hits.push('記録 ' + 元.join(' / ') + ' / 写し ' + 写.join(' / '));
+    if (受.length) hits.push('「受けた評価」に行がある: ' + 受.length);
+    if (rm.indexOf('同じ記録の「受けた評価」の表に、この資料の行はありません。') < 0) hits.push('「受けた評価」についての文が無い');
+  }
+  check('外部の反応が、外部評価の記録と合う' + (fs.existsSync(f) ? '' : '（兄弟に記録が無いので、所在と行の有無だけを見た）'), hits);
+}
+
+// 12. README が名乗るページ数と項目数が、実際と合うこと（決めごと 5）。
 //    一度、ページと検査が増えたのに「17 ページを 5 項目で」のまま残っていた。
 //    この項目自身も数に入れる。
 const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
