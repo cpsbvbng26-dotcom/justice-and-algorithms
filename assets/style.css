@@ -161,6 +161,18 @@ header {
 .prose td { color: var(--muted); }
 .prose tbody tr:hover { background: var(--accent-soft); }
 
+/* ---------- 立場と論点の図（build.js が docs/map.md から描く） ---------- */
+.map-figure { margin: 0 0 2rem; }
+.map-figure svg { display: block; width: 100%; max-width: 30rem; height: auto; margin: 0 auto; }
+.map-figure text { fill: var(--text); font-size: 15px; }
+.map-figure .map-head { fill: var(--faint); font-size: 12px; letter-spacing: .08em; }
+.map-figure line { stroke: var(--accent); stroke-width: 1.4; stroke-opacity: .75; }
+.map-figure circle { fill: var(--accent); }
+.map-figure figcaption { font-size: .78rem; color: var(--faint); margin-top: .8rem; line-height: 1.8; }
+
+/* ---------- 読む時間の目安（build.js が字数から数える） ---------- */
+.prose .reading-time { font-size: .78rem; color: var(--faint); margin: -1.6rem 0 2.4rem; }
+
 /* ---------- フッター ---------- */
 footer { border-top: 1px solid var(--line); }
 .foot {
