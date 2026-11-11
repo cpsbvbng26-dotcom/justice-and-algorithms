@@ -21,6 +21,9 @@ const path = require('path');
 const SITE = path.resolve(__dirname, '..', 'site');
 /* 広い幅から狭い幅まで。390px では通り、360px でだけ横へ流れる頁がありうる。 */
 const WIDTHS = [1440, 1200, 900, 390, 360];
+/* 文字だけを 200% にしても、横へ流れないこと（WCAG 1.4.4）。ブラウザの文字の大きさの設定と同じく、
+ * 根の文字の大きさを倍にして測る。広い画面と、いちばん狭い画面で。 */
+const ZOOM_WIDTHS = [1280, 360];
 
 function pages(dir = SITE, rel = '') {
   return fs.readdirSync(dir, { withFileTypes: true }).flatMap((e) => {
@@ -126,7 +129,7 @@ async function walk(pg) {
   const server = await serve();
   const base = 'http://127.0.0.1:' + server.address().port + '/';
   const list = pages();
-  console.log('キーボードと幅 —— ' + list.length + ' 頁を Tab で辿り、' + WIDTHS.join(' / ') + ' px で測る');
+  console.log('キーボードと幅 —— ' + list.length + ' 頁を Tab で辿り、' + WIDTHS.join(' / ') + ' px で測る。文字を 200% にして ' + ZOOM_WIDTHS.join(' / ') + ' px でも測る');
 
   for (const page of list) {
     const ctx = await browser.newContext({ viewport: { width: 1200, height: 800 } });
@@ -174,6 +177,17 @@ async function walk(pg) {
         ok(page + '：' + w + 'px で本文の左右に 12px 以上の余白がある', g.L >= 12 && g.R >= 12, '左 ' + g.L + ' / 右 ' + g.R);
       }
       await c2.close();
+    }
+    for (const w of ZOOM_WIDTHS) {
+      const c3 = await browser.newContext({ viewport: { width: w, height: 900 } });
+      const p3 = await c3.newPage();
+      await p3.goto(base + page, { waitUntil: 'load' });
+      const over = await p3.evaluate(() => {
+        document.documentElement.style.fontSize = '200%';
+        return document.documentElement.scrollWidth - document.documentElement.clientWidth;
+      });
+      ok(page + '：文字を 200% にして ' + w + 'px で横へ流れない', over <= 1, over + 'px はみ出す');
+      await c3.close();
     }
   }
   await browser.close();

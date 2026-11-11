@@ -268,6 +268,95 @@ check('CSP のハッシュがページの中身と一致する', [...new Set(mis
   check('外部の反応が、外部評価の記録と合う' + (fs.existsSync(f) ? '' : '（兄弟に記録が無いので、所在と行の有無だけを見た）'), hits);
 }
 
+/* 11b. 読みやすさと配信。autonomy-and-self-cultivation と justice-and-algorithms の check_site.js に同じ形で置く。
+ * 配色の比（WCAG）、端末の設定に従う暗い配色、画像の代替テキスト、頁の重さ、頁の下の欄、
+ * sitemap.xml と robots.txt、正の URL（canonical）。文字を 200% にしたときと 360px の幅は、
+ * ブラウザを起こす check_keyboard.js が測る。 */
+{
+  /* 配信先は build.js が持つ。リポジトリの名から組んだ URL と同じであることも見る。 */
+  const src = fs.readFileSync(path.join(ROOT, 'build.js'), 'utf8');
+  const BASE = (/const BASE = '([^']+)'/.exec(src) || [])[1] || '';
+  const NAME = (/const REPO = 'https:\/\/github\.com\/cpsbvbng26-dotcom\/([^']+)'/.exec(src) || [])[1] || '';
+  check('配信先が、このリポジトリの Pages の URL である', BASE && BASE === 'https://cpsbvbng26-dotcom.github.io/' + NAME + '/' ? [] : ['BASE ' + BASE + ' / REPO ' + NAME]);
+  /* 一頁の HTML の上限。PDF は読みに行く人だけが落とすので数えない。通信の遅い人のために、
+   * いちばん重い頁の倍ほどに置いた。 */
+  const MAX_BYTES = 100 * 1000;
+  const css = fs.readFileSync(path.join(ROOT, 'assets', 'style.css'), 'utf8');
+  const tokens = (m) => (m ? Object.fromEntries([...m[1].matchAll(/--([a-z-]+):\s*(#[0-9a-fA-F]{6})\s*;/g)].map((x) => [x[1], x[2].toLowerCase()])) : null);
+  const light = tokens(css.match(/^:root \{([^}]*)\}/m));
+  const dark = tokens(css.match(/^:root\[data-theme="dark"\] \{([^}]*)\}/m));
+  const media = tokens(css.match(/@media \(prefers-color-scheme: dark\) \{\s*:root:not\(\[data-theme="light"\]\) \{([^}]*)\}/));
+  const lum = (hex) => {
+    const v = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255).map((c) => (c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4)));
+    return 0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2];
+  };
+  const ratio = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
+
+  const low = [];
+  for (const [name, t] of [['ライト', light], ['ダーク', dark]]) {
+    if (!t) { low.push(name + 'の定義が無い'); continue; }
+    for (const ground of ['bg', 'card']) for (const ink of ['text', 'muted', 'faint', 'accent']) {
+      const r = t[ink] && t[ground] ? ratio(t[ink], t[ground]) : 0;
+      if (r < 4.5) low.push(name + ' --' + ink + ' / --' + ground + ' ' + r.toFixed(2) + ':1');
+    }
+  }
+  check('文字の色が、地の色に対して WCAG の 4.5:1 以上ある（ライトとダーク）', low);
+
+  const themeHits = [];
+  if (!media) themeHits.push('@media (prefers-color-scheme: dark) の定義が無い');
+  else if (JSON.stringify(media) !== JSON.stringify(dark)) themeHits.push('端末の設定の暗い配色と、切り替えの暗い配色が違う');
+  for (const file of pages) {
+    const html = fs.readFileSync(file, 'utf8');
+    if (html.indexOf('id="themeToggle"') < 0 || html.indexOf('assets/theme.js"></script>') < 0) themeHits.push(path.relative(SITE, file) + ' に切り替えが無い');
+  }
+  check('暗い配色は、端末の設定にも切り替えにも従い、二つが同じ色を使う', themeHits);
+
+  const altHits = [];
+  for (const file of pages) {
+    for (const m of fs.readFileSync(file, 'utf8').matchAll(/<img\b[^>]*>/g)) {
+      const alt = /\balt="([^"]*)"/.exec(m[0]);
+      const rel = path.relative(SITE, file);
+      if (!alt) altHits.push(rel + ' alt が無い');
+      else if (/^(画像|写真|図)|^(image|picture|photo)\b/i.test(alt[1]) || /\.(png|jpe?g|svg|gif|webp)$/i.test(alt[1])) altHits.push(rel + ' 「' + alt[1] + '」');
+    }
+  }
+  check('画像の代替テキストが、CONTRIBUTING.md の決めに沿う（「画像」で始めない、ファイル名にしない）', altHits);
+
+  const heavy = pages.map((f) => [path.relative(SITE, f), fs.statSync(f).size]).filter(([, n]) => n > MAX_BYTES).map(([f, n]) => f + ' ' + n + ' バイト');
+  check('どの頁の HTML も ' + MAX_BYTES + ' バイト以下', heavy);
+
+  const footHits = [];
+  for (const file of pages) {
+    const html = fs.readFileSync(file, 'utf8');
+    const foot = (/<footer>([\s\S]*?)<\/footer>/.exec(html) || ['', ''])[1];
+    const rel = path.relative(SITE, file);
+    if (foot.indexOf('運営 根本卓哉') < 0) footHits.push(rel + ' 運営');
+    if (foot.indexOf('/issues/new?template=error-report.yml">連絡') < 0) footHits.push(rel + ' 連絡');
+    if (foot.indexOf('cpsbvbng26-dotcom/blob/main/DISCLAIMER.md">免責事項') < 0) footHits.push(rel + ' 免責');
+    if (/nusquama/i.test(html)) footHits.push(rel + ' 創作のサイトへつないでいる');
+  }
+  check('どの頁の下の欄にも、運営・連絡・免責があり、創作のサイトへはつながない', footHits);
+
+  const rels = pages.map((f) => path.relative(SITE, f).split(path.sep).join('/'));
+  const canonHits = [];
+  for (const file of pages) {
+    const rel = path.relative(SITE, file).split(path.sep).join('/');
+    const want = rel === 'index.html' ? BASE : BASE + rel;
+    const got = [...fs.readFileSync(file, 'utf8').matchAll(/<link rel="canonical" href="([^"]+)">/g)].map((m) => m[1]);
+    if (got.length !== 1 || got[0] !== want) canonHits.push(rel + ' ' + (got.join(' ') || '無い'));
+  }
+  check('どの頁にも、正の URL（canonical）がちょうど一つあり、配信先の自分を指す', canonHits);
+
+  const mapHits = [];
+  const sm = fs.existsSync(path.join(SITE, 'sitemap.xml')) ? fs.readFileSync(path.join(SITE, 'sitemap.xml'), 'utf8') : '';
+  const locs = [...sm.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]).sort();
+  const want = rels.filter((r) => r !== 'CLAUDE.html').map((r) => (r === 'index.html' ? BASE : BASE + r)).sort();
+  if (JSON.stringify(locs) !== JSON.stringify(want)) mapHits.push('sitemap.xml ' + locs.length + ' 件 / 頁 ' + want.length + ' 件');
+  const robots = fs.existsSync(path.join(SITE, 'robots.txt')) ? fs.readFileSync(path.join(SITE, 'robots.txt'), 'utf8') : '';
+  if (robots.indexOf('Sitemap: ' + BASE + 'sitemap.xml') < 0) mapHits.push('robots.txt が sitemap.xml を指していない');
+  check('sitemap.xml が CLAUDE.html のほかの全頁を挙げ、robots.txt がそれを指す', mapHits);
+}
+
 // 12. README が名乗るページ数と項目数が、実際と合うこと（決めごと 5）。
 //    一度、ページと検査が増えたのに「17 ページを 5 項目で」のまま残っていた。
 //    この項目自身も数に入れる。
