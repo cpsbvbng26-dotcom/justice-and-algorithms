@@ -1,0 +1,36 @@
+# check_hygiene.py が読む。このリポジトリだけの違いをここに置く。
+
+# 外部のパッケージ。playwright はキーボードと幅の検査に使う。
+packages = ["playwright"]
+
+# 書き込みの権限。「ワークフローのファイル名:権限」。
+writes = ["pages.yml:pages", "pages.yml:id-token"]
+
+# 要旨。.zenodo.json の description に、日本語と英語を続けて置いている。
+[abstract]
+ja = [".zenodo.json", "description"]
+en = [".zenodo.json", "description"]
+
+# 散文の数。ほかの検査が拾っていなかったもの。
+[[counts]]
+what = "立場"
+files = "docs/traditions/*.md"
+exclude = ["docs/traditions/README.md"]
+places = [["README.md", '(\d+) つの立場を扱います'], ["docs/traditions/README.md", '(\d+) つの立場を扱います'],
+          ["CONTRIBUTING.md", '(\d+) つの立場それぞれ'], ["CITATION.cff", '(\d+)つの立場'],
+          [".zenodo.json", '(\d+)つの立場'], [".zenodo.json", 'It maps (\d+) positions']]
+
+[[counts]]
+what = "論点"
+files = "docs/issues/*.md"
+exclude = ["docs/issues/README.md"]
+places = [["README.md", '(\d+) つの論点を扱います'], ["docs/issues/README.md", '(\d+) つの論点を扱います'],
+          ["CITATION.cff", '(\d+)つの論点'], [".zenodo.json", '(\d+)つの論点'], [".zenodo.json", 'onto (\d+) issues']]
+
+[[counts]]
+what = "論点編の文献の識別子"
+files = "docs/issues/*.md"
+section = "## 文献"
+pattern = '\]\((https://(?:doi\.org|arxiv\.org)/[^)]+)\)'
+distinct = true
+places = [["README.md", '論点編（`docs/issues/`）の (\d+) 件は']]
