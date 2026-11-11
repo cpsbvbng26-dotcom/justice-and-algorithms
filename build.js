@@ -20,6 +20,15 @@ const SITE_NAME = '正義論とアルゴリズム';
 const DOI = '10.5281/zenodo.22335676';
 const REPO = 'https://github.com/cpsbvbng26-dotcom/justice-and-algorithms';
 const REPO_BLOB = REPO + '/blob/main/';
+/* Pages の配信先。deploy の仕事の記録（Evaluated environment url）にある URL である。
+ * 各頁の正の URL（canonical）と sitemap.xml はここから作る。 */
+const BASE = 'https://cpsbvbng26-dotcom.github.io/justice-and-algorithms/';
+/* 頁の下の欄。運営・連絡・免責の三つを、どの頁にも同じ形で置く。研究の系列のサイトなので、
+ * 創作のサイトへはつながない。 */
+const ERROR_FORM = REPO + '/issues/new?template=error-report.yml';
+const DISCLAIMER = 'https://github.com/cpsbvbng26-dotcom/cpsbvbng26-dotcom/blob/main/DISCLAIMER.md';
+/* sitemap.xml に載せない頁。CLAUDE.md は作業の指示書であり、読ませる頁ではない。 */
+const NOT_IN_SITEMAP = ['CLAUDE.html'];
 
 const esc = (s) => String(s)
   .replace(/&/g, '&amp;')
@@ -324,7 +333,7 @@ const NAV = [
   ['docs/map.html', '対応表']
 ];
 
-function layout(title, body, depth) {
+function layout(title, body, depth, url) {
   const up = '../'.repeat(depth);
   const nav = NAV.map((n) => '      <a href="' + up + n[0] + '">' + n[1] + '</a>').join('\n');
   const css = fs.readFileSync(path.join(ROOT, 'assets', 'style.css'), 'utf8');
@@ -338,6 +347,7 @@ function layout(title, body, depth) {
     '<title>' + esc(title) + '</title>',
     '<meta name="description" content="アルゴリズムによる判断をめぐる論点を、政治哲学の正義論に接続して整理する資料。">',
     '<meta name="robots" content="index, follow">',
+    '<link rel="canonical" href="' + url + '">',
     '<meta name="theme-color" content="#faf9f7">',
     '<style>',
     css,
@@ -363,8 +373,8 @@ function layout(title, body, depth) {
     '',
     '<footer>',
     '  <div class="wrap foot">',
-    '    <span>CC BY 4.0 &nbsp;/&nbsp; <a href="https://doi.org/' + DOI + '">' + DOI + '</a></span>',
-    '    <span><a href="' + REPO + '">GitHub</a></span>',
+    '    <span>運営 根本卓哉 &nbsp;/&nbsp; CC BY 4.0 &nbsp;/&nbsp; <a href="https://doi.org/' + DOI + '">' + DOI + '</a></span>',
+    '    <span><a href="' + ERROR_FORM + '">連絡（誤りの知らせ）</a> &nbsp;/&nbsp; <a href="' + DISCLAIMER + '">免責事項</a> &nbsp;/&nbsp; <a href="' + REPO + '">GitHub</a></span>',
     '  </div>',
     '</footer>',
     '',
@@ -389,6 +399,7 @@ function build() {
   })(ROOT);
 
   fs.rmSync(OUT, { recursive: true, force: true });
+  const urls = [];
 
   for (const src of files) {
     const rel = path.relative(ROOT, src).replace(/\.md$/, '.html');
@@ -404,13 +415,24 @@ function build() {
     let body = render(md.split(FIG).join('%%MAPFIGURE%%'));
     body = body.replace('<p>%%MAPFIGURE%%</p>', mapFigure);
     body = withReadingTime(body);
-    fs.writeFileSync(dest, withCSP(layout(pageTitle, body, depth)));
+    const outRel = rel === 'README.html' ? 'index.html' : rel.split(path.sep).join('/');
+    fs.writeFileSync(dest, withCSP(layout(pageTitle, body, depth, outRel === 'index.html' ? BASE : BASE + outRel)));
+    urls.push(outRel);
   }
 
   fs.renameSync(path.join(OUT, 'README.html'), path.join(OUT, 'index.html'));
   fs.mkdirSync(path.join(OUT, 'assets'), { recursive: true });
   fs.copyFileSync(path.join(ROOT, 'assets', 'theme.js'), path.join(OUT, 'assets', 'theme.js'));
   fs.writeFileSync(path.join(OUT, '.nojekyll'), '');
+
+  /* sitemap.xml と robots.txt。Pages の利用者サイトではなく、そのひとつ下に置かれるので、
+   * 検索エンジンは robots.txt をここからは読まない。sitemap.xml は Search Console から渡せる。 */
+  const listed = urls.filter((u) => NOT_IN_SITEMAP.indexOf(u) < 0).sort();
+  fs.writeFileSync(path.join(OUT, 'sitemap.xml'), '<?xml version="1.0" encoding="UTF-8"?>\n'
+    + '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+    + listed.map((u) => '  <url><loc>' + (u === 'index.html' ? BASE : BASE + u) + '</loc></url>\n').join('')
+    + '</urlset>\n');
+  fs.writeFileSync(path.join(OUT, 'robots.txt'), 'User-agent: *\nAllow: /\n\nSitemap: ' + BASE + 'sitemap.xml\n');
 
   console.log('生成しました: site/ (' + files.length + ' ページ)');
 }

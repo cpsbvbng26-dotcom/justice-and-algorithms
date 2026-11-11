@@ -3,7 +3,7 @@
   --card: #ffffff;
   --text: #17171a;
   --muted: #4b4b52;
-  --faint: #8b8b93;
+  --faint: #727278;
   --line: #e6e4df;
   --line-soft: #efedea;
   --accent: #8a6a3d;
@@ -16,12 +16,30 @@
   --card: #191919;
   --text: #ececee;
   --muted: #b3b3ba;
-  --faint: #7a7a82;
+  --faint: #81818b;
   --line: #2a2a2d;
   --line-soft: #232326;
   --accent: #b08d57;
   --accent-soft: rgba(176, 141, 87, .12);
   --header-bg: rgba(18, 18, 20, .88);
+}
+
+/* 切り替えを押していない人には、端末の設定に従う。スクリプトが動かなくても効く。
+   中身は上の dark と同じにする。check_site.js が三つの定義を突き合わせる。 */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121214;
+    --card: #191919;
+    --text: #ececee;
+    --muted: #b3b3ba;
+    --faint: #81818b;
+    --line: #2a2a2d;
+    --line-soft: #232326;
+    --accent: #b08d57;
+    --accent-soft: rgba(176, 141, 87, .12);
+    --header-bg: rgba(18, 18, 20, .88);
+  }
+  :root:not([data-theme="light"]) { color-scheme: dark; }
 }
 
 html { color-scheme: light; }
@@ -143,6 +161,10 @@ header {
   border-radius: .6rem;
 }
 .prose pre code { padding: 0; background: none; color: var(--muted); font-size: .82rem; }
+/* 文字を 200% にしたときも、本文の中の長いファイル名・URL・DOI を画面の幅で折り返す。
+   折り返せないと、360px の画面で頁ごと横へ流れた（check_keyboard.js が測る）。表は .table-wrap の中で横に送る。 */
+.prose p, .prose li, .prose blockquote, .prose dd,
+.prose h1, .prose h2, .prose h3, .prose h4 { overflow-wrap: anywhere; }
 
 /* ---------- 表 ---------- */
 .table-wrap { overflow-x: auto; margin: 0 0 1.8rem; }
@@ -200,6 +222,8 @@ footer { border-top: 1px solid var(--line); }
 @media (max-width: 34rem) {
   .head-row { flex-wrap: wrap; align-items: flex-start; row-gap: .5rem; }
   .nav { width: 100%; flex-wrap: wrap; gap: .9rem; }
+  /* 文字を 200% にすると、サイトの名が一行に収まらない。狭い画面では折り返す。 */
+  .mark { white-space: normal; }
   .nav a { font-size: .74rem; }
   .wrap { padding: 0 1.1rem; }
   .prose { padding: 2.5rem 1.1rem 3.5rem; }
