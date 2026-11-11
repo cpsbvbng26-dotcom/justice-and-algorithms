@@ -43,8 +43,10 @@ function bodyOnly(html) {
 }
 
 const failures = [];
+let checked = 0;
 
 function check(label, hits) {
+  checked += 1;
   if (hits.length === 0) {
     console.log('  OK   ' + label);
   } else {
@@ -138,6 +140,18 @@ for (const file of pages) {
 check('すべてのページに CSP がある', noCsp);
 check('CSP が緩められていない', weak);
 check('CSP のハッシュがページの中身と一致する', [...new Set(mismatch)]);
+
+// 7. README が名乗るページ数と項目数が、実際と合うこと（決めごと 5）。
+//    一度、ページと検査が増えたのに「17 ページを 5 項目で」のまま残っていた。
+//    この項目自身も数に入れる。
+const readme = fs.readFileSync(path.join(ROOT, 'README.md'), 'utf8');
+const claim = /生成物 (\d+) ページを (\d+) 項目で検査します/.exec(readme);
+const total = checked + 1;
+check('README が名乗るページ数と項目数が実際と合う',
+  claim && Number(claim[1]) === pages.length && Number(claim[2]) === total
+    ? []
+    : ['名乗り ' + (claim ? claim[1] + ' ページ・' + claim[2] + ' 項目' : '無い')
+       + ' / 実際 ' + pages.length + ' ページ・' + total + ' 項目']);
 
 console.log();
 if (failures.length) {
