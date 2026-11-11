@@ -145,3 +145,7 @@ node verification/check_site.js
 ```
 
 生成されたページを手で編集しない。
+
+入口の頁の図（`README.md` の `<!-- 図:立場と論点 -->` の位置）は、`build.js` が
+`docs/map.md` の「論点との交差」から描く。各頁の読む時間の目安も `build.js` が字数から数える。
+どちらも手で書かない。`check_site.js` が表と字数から数え直して突き合わせる。
