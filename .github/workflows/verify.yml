@@ -6,13 +6,17 @@ on:
   pull_request:
   workflow_dispatch:
 
+# 読むだけで足りる。書き込みの権限は、要る仕事にだけ名指しで渡す。
+permissions:
+  contents: read
+
 jobs:
   site:
     name: 生成物に記法の取りこぼしがないか
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
           node-version: 22
       - run: node build.js
@@ -26,8 +30,8 @@ jobs:
     # ubuntu 26.04 では playwright 1.56.1 が Chromium を入れられない。cpsbvbng26-dotcom と同じく 24.04 に置く。
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
           node-version: 22
       - run: node build.js
