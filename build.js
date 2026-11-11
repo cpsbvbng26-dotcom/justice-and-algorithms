@@ -211,6 +211,108 @@ function render(md) {
 }
 
 /* ---------------------------------------------------------------- *
+ * 立場と論点の図
+ *
+ * 入口の頁に、六つの立場と五つの論点の対応を一枚の図で置く。
+ * 線は docs/map.md の「論点との交差」の表（最も強く反応する立場）から引く。
+ * 図を手で描かない。表を直せば図も変わり、check_site.js が表と図を突き合わせる。
+ *
+ * 立場の名は「何を最終的な基準に置くか」の表の名に揃える。交差の表が別の名で
+ * 呼んでいるとき（ロールズ）は、リンク先の頁の題に含まれる名で引き当てる。
+ * 引き当てられない名があれば、生成を止める。
+ * ---------------------------------------------------------------- */
+
+function tableAfter(md, heading) {
+  const i = md.indexOf(heading);
+  if (i < 0) throw new Error('docs/map.md に「' + heading + '」がありません');
+  const lines = md.slice(i).split('\n');
+  const k = lines.findIndex((l) => l.startsWith('|'));
+  const rows = [];
+  for (let j = k + 2; j < lines.length && lines[j].startsWith('|'); j++) {
+    rows.push(lines[j].replace(/^\||\|$/g, '').split('|').map((c) => c.trim()));
+  }
+  return rows;
+}
+
+function mapData() {
+  const md = fs.readFileSync(path.join(ROOT, 'docs', 'map.md'), 'utf8');
+  const link = (c) => /^\[([^\]]+)\]\(([^)]+)\)$/.exec(c) || [c, c, ''];
+  const traditions = tableAfter(md, '## 何を最終的な基準に置くか').map((r) => {
+    const m = link(r[0]);
+    const doc = m[2] ? fs.readFileSync(path.join(ROOT, 'docs', m[2]), 'utf8') : '';
+    return { name: m[1], title: (/^#\s+(.*)$/m.exec(doc) || [, ''])[1], basis: r[1], question: r[2] };
+  });
+  const resolve = (n) => {
+    const t = traditions.find((x) => x.name === n) || traditions.find((x) => x.title.indexOf(n) >= 0);
+    if (!t) throw new Error('docs/map.md の交差の表の「' + n + '」を、立場の表に引き当てられません');
+    return t.name;
+  };
+  const issues = tableAfter(md, '## 論点との交差').map((r) => ({
+    name: link(r[0])[1],
+    strongest: r[1].split('/').map((x) => resolve(x.trim()))
+  }));
+  return { traditions, issues };
+}
+
+function mapFigure() {
+  const { traditions, issues } = mapData();
+  const W = 430, top = 44, gap = 44, lx = 140, rx = 255;
+  const ly = (i) => top + i * gap + (issues.length > traditions.length ? (issues.length - traditions.length) * gap / 2 : 0);
+  const ry = (i) => top + i * gap + (traditions.length > issues.length ? (traditions.length - issues.length) * gap / 2 : 0);
+  const H = top + Math.max(traditions.length, issues.length) * gap - gap / 2;
+  const out = [];
+  const pairs = [];
+  issues.forEach((iss, i) => iss.strongest.forEach((t) => pairs.push([t, iss.name, i])));
+  out.push('<figure class="map-figure">');
+  out.push('<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-labelledby="map-title map-desc">');
+  out.push('<title id="map-title">立場と論点の対応</title>');
+  out.push('<desc id="map-desc">' + esc(issues.map((x) => x.name + 'に最も強く反応する立場は、' + x.strongest.join('と') + '。').join('')) + '</desc>');
+  out.push('<text class="map-head" x="' + lx + '" y="16" text-anchor="end">立場</text>');
+  out.push('<text class="map-head" x="' + rx + '" y="16">論点</text>');
+  for (const [t, iss, i] of pairs) {
+    const a = traditions.findIndex((x) => x.name === t);
+    out.push('<line data-from="' + esc(t) + '" data-to="' + esc(iss) + '" x1="' + (lx + 8) + '" y1="' + (ly(a) - 5)
+      + '" x2="' + (rx - 8) + '" y2="' + (ry(i) - 5) + '"></line>');
+  }
+  traditions.forEach((t, i) => {
+    out.push('<circle cx="' + (lx + 8) + '" cy="' + (ly(i) - 5) + '" r="3"></circle>');
+    out.push('<text data-node="立場" x="' + lx + '" y="' + ly(i) + '" text-anchor="end">' + esc(t.name) + '</text>');
+  });
+  issues.forEach((x, i) => {
+    out.push('<circle cx="' + (rx - 8) + '" cy="' + (ry(i) - 5) + '" r="3"></circle>');
+    out.push('<text data-node="論点" x="' + rx + '" y="' + ry(i) + '">' + esc(x.name) + '</text>');
+  });
+  out.push('</svg>');
+  out.push('<figcaption>線は、<a href="docs/map.html">対応表</a>の「論点との交差」で、その論点に最も強く反応するとされた立場を結んでいます。図は表から <code>build.js</code> が描いています。</figcaption>');
+  out.push('</figure>');
+  return out.join('\n');
+}
+
+/* ---------------------------------------------------------------- *
+ * 読むのにかかる時間の目安
+ *
+ * 頁の本文の字数から計算する。数を手で書かない（決めごと 5）。
+ * 数えるのは、本文からタグと空白とコードブロックを除いた字。一分に 500 字として割り、切り上げる。
+ * check_site.js が同じ数え方で数え直し、頁に書いた数と突き合わせる。
+ * ---------------------------------------------------------------- */
+const PER_MINUTE = 500;
+function countChars(html) {
+  return html
+    .replace(/<pre[\s\S]*?<\/pre>/g, '')
+    .replace(/<figure[\s\S]*?<\/figure>/g, '')
+    .replace(/<[^>]*>/g, '')
+    .replace(/&[a-z]+;|&#\d+;/g, 'x')
+    .replace(/\s+/g, '')
+    .length;
+}
+function withReadingTime(body) {
+  const n = countChars(body);
+  const p = '<p class="reading-time">読むのにかかる時間の目安は約 ' + Math.ceil(n / PER_MINUTE)
+    + ' 分です（本文 ' + n + ' 字を、一分に ' + PER_MINUTE + ' 字として build.js が数えました）。</p>';
+  return /<\/h1>/.test(body) ? body.replace(/<\/h1>/, '</h1>\n' + p) : p + '\n' + body;
+}
+
+/* ---------------------------------------------------------------- *
  * 出力
  * ---------------------------------------------------------------- */
 
@@ -297,7 +399,12 @@ function build() {
     const depth = rel.split(path.sep).length - 1;
     fs.mkdirSync(path.dirname(dest), { recursive: true });
     const pageTitle = title === SITE_NAME ? SITE_NAME : title + ' | ' + SITE_NAME;
-    fs.writeFileSync(dest, withCSP(layout(pageTitle, render(md), depth)));
+    /* 図の印。render() は注釈を落とすので、その前に段落の印へ替えておく。 */
+    const FIG = '<!-- 図:立場と論点 -->';
+    let body = render(md.split(FIG).join('%%MAPFIGURE%%'));
+    body = body.replace('<p>%%MAPFIGURE%%</p>', mapFigure);
+    body = withReadingTime(body);
+    fs.writeFileSync(dest, withCSP(layout(pageTitle, body, depth)));
   }
 
   fs.renameSync(path.join(OUT, 'README.html'), path.join(OUT, 'index.html'));
