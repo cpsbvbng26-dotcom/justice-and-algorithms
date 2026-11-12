@@ -194,4 +194,4 @@ push ごとに GitHub Actions が実行しています。
 制作過程はリポジトリの履歴から確認できます（`git log --author=Claude`、
 および各コミットの `Claude-Session:` / `Assisted-by:` トレーラ）。
 
-責任の範囲は、[免責事項](https://github.com/cpsbvbng26-dotcom/cpsbvbng26-dotcom/blob/main/DISCLAIMER.md)に定めています。
+責任は、法令の定めるとおりです。説明は[免責事項](https://github.com/cpsbvbng26-dotcom/cpsbvbng26-dotcom/blob/main/DISCLAIMER.md)にあります。
