@@ -23,5 +23,5 @@
     "political philosophy",
     "justice"
   ],
-  "notes": "The draft was written with Claude Code (Anthropic) at the author's request. The author decided the content, reviewed it and is responsible for it. Claude is not an author. Not peer-reviewed. The text is CC BY 4.0."
+  "notes": "The draft was written with Claude Code (Anthropic) at the author's request. The author decided the content, reviewed it and is responsible for it. Claude is not an author. Not peer-reviewed. The text is CC BY 4.0 (LICENSE); the check and build scripts are MIT (LICENSE-CODE). The licence field of this record covers the text only. Texts by others that this repository quotes, or keeps to verify its quotations, are not licensed under CC BY 4.0 or the MIT License and remain their owners'."
 }
