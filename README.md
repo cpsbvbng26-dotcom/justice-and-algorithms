@@ -176,6 +176,8 @@ push ごとに GitHub Actions が実行しています。
 `LICENSE` には CC BY 4.0 しか置いておらず、検査スクリプトを CC BY 4.0 だと読む余地が
 ありました。ライセンスを変えたのではありません。書いていなかったものを書きました。
 
+このリポジトリが引き、または引用を確かめるために置いている他人の文は、CC BY 4.0 でも MIT でも許諾しておらず、それぞれの権利者のものです。
+
 ## 制作について
 
 [![Built with Claude Code](https://img.shields.io/badge/Built%20with-Claude%20Code-D97757?style=for-the-badge)](https://claude.com/claude-code)
