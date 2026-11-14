@@ -4,7 +4,8 @@
 packages = ["playwright"]
 
 # 書き込みの権限。「ワークフローのファイル名:権限」。
-writes = ["pages.yml:pages", "pages.yml:id-token"]
+# 2026-11-14：突き合わせの受付（checked-intake.yml）は、誤りの知らせにラベルを付けて閉じるので、issue に書く。13 のリポジトリで同じファイル。
+writes = ["pages.yml:pages", "pages.yml:id-token", "checked-intake.yml:issues"]
 
 # 要旨。.zenodo.json の description に、日本語と英語を続けて置いている。
 [abstract]
