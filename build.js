@@ -27,6 +27,9 @@ const BASE = 'https://cpsbvbng26-dotcom.github.io/justice-and-algorithms/';
  * 創作のサイトへはつながない。 */
 const ERROR_FORM = REPO + '/issues/new?template=error-report.yml';
 const DISCLAIMER = 'https://github.com/cpsbvbng26-dotcom/cpsbvbng26-dotcom/blob/main/DISCLAIMER.md';
+/* 見た目の部品（書体・ロゴ・図・配色・配置・外から読む素材）の権利と、関わる法令の条を書いた頁。
+ * 免責事項と同じく、どの頁の下の欄からもつなぐ。中身は check_site.js（13）が実際のファイルと突き合わせる。 */
+const DESIGN_LEGAL = 'docs/design-legal.html';
 /* sitemap.xml に載せない頁。CLAUDE.md は作業の指示書であり、読ませる頁ではない。 */
 const NOT_IN_SITEMAP = ['CLAUDE.html'];
 
@@ -374,7 +377,7 @@ function layout(title, body, depth, url) {
     '<footer>',
     '  <div class="wrap foot">',
     '    <span>運営 根本卓哉 &nbsp;/&nbsp; CC BY 4.0 &nbsp;/&nbsp; <a href="https://doi.org/' + DOI + '">' + DOI + '</a></span>',
-    '    <span><a href="' + ERROR_FORM + '">連絡（誤りの知らせ）</a> &nbsp;/&nbsp; <a href="' + DISCLAIMER + '">免責事項</a> &nbsp;/&nbsp; <a href="' + REPO + '">GitHub</a></span>',
+    '    <span><a href="' + ERROR_FORM + '">連絡（誤りの知らせ）</a> &nbsp;/&nbsp; <a href="' + DISCLAIMER + '">免責事項</a> &nbsp;/&nbsp; <a href="' + up + DESIGN_LEGAL + '">デザインに関する法的な扱い</a> &nbsp;/&nbsp; <a href="' + REPO + '">GitHub</a></span>',
     '  </div>',
     '</footer>',
     '',
