@@ -176,3 +176,7 @@ python3 verification/check_hygiene.py   # 依存・権限・固定・秘密・�
 入口の頁の図（`README.md` の `<!-- 図:立場と論点 -->` の位置）は、`build.js` が
 `docs/map.md` の「論点との交差」から描く。各頁の読む時間の目安も `build.js` が字数から数える。
 どちらも手で書かない。`check_site.js` が表と字数から数え直して突き合わせる。
+
+見た目の部品（書体・ロゴ・ファビコン・共有用の画像・図・記号・配色・配置・外から読む素材）の権利と、関わる法令の条は
+`docs/design-legal.md`（デザインに関する法的な扱い）に書いてある。どの頁の下の欄からもつなぐ。部品を変えたら、この頁と
+`check_site.js` の 13 を同じ PR で直す。頁が引く条文は `verification/statutes-texts.json` の写しの文だけで、手で書き換えない。
